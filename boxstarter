@@ -50,7 +50,9 @@ cinst virtualbox
 cinst virtualbox.extensionpack
 cinst vagrant
 
-cinst boot2docker
+# Docker is currently not included, since it doesn't support Windows 10 at this time.
+# To install, manually download and run https://github.com/docker/toolbox/releases/download/v1.8.1a/DockerToolbox-1.8.1a-windows-10-test.exe
+
 if (Test-PendingReboot) { Invoke-Reboot }
 
 ## Basics
