@@ -1,0 +1,72 @@
+# Configure Windows
+Set-WindowsExplorerOptions -EnableShowHiddenFilesFoldersDrives -EnableShowProtectedOSFiles -EnableShowFileExtensions -EnableShowFullPathInTitleBar
+
+Update-ExecutionPolicy Unrestricted
+
+cinst Microsoft-Hyper-V-All -source windowsFeatures
+
+# Packages
+cinst cmder -pre
+cinst Gow
+
+## Node, npm
+cinst nodejs.install
+
+## Git
+cinst git.install
+cinst poshgit
+cinst git-credential-winstore
+cinst github
+
+## Node, npm
+cinst nodejs.install
+npm install -g npm-windows-upgrade
+
+## Editors
+cinst SublimeText3
+cinst SublimeText3.PackageControl
+cinst sublimetext3-contextmenu
+cinst SublimeText3.PowershellAlias
+
+cinst Atom
+cinst visualstudiocode
+
+## Visual Studio 2015
+cinst visualstudio2015community
+if (Test-PendingReboot) { Invoke-Reboot }
+
+## Ruby, Go, Python
+cinst ruby
+cinst ruby.devkit
+
+cinst golang
+
+cinst python
+cinst pip
+cinst easy.install
+
+## DevOps Stuff
+cinst virtualbox
+cinst virtualbox.extensionpack
+cinst vagrant
+
+cinst boot2docker
+if (Test-PendingReboot) { Invoke-Reboot }
+
+## Basics
+cinst vlc
+cinst GoogleChrome
+cinst 7zip.install
+cinst sysinternals
+cinst DotNet3.5
+# cinst DotNet4.0 -- not needed on windows 8
+# cinst DotNet4.5 -- not needed on windows 10
+# cinst PowerShell -- not needed on windows 10
+if (Test-PendingReboot) { Invoke-Reboot }
+
+# Pinning Things
+Install-ChocolateyPinnedTaskBarItem "$env:programfiles\Google\Chrome\Application\chrome.exe"
+Install-ChocolateyFileAssociation ".txt" "$env:programfiles\Sublime Text 3\sublime_text.exe"
+
+# Let's get Updates, too
+Install-WindowsUpdate -acceptEula
