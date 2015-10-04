@@ -3,52 +3,52 @@ Set-WindowsExplorerOptions -EnableShowHiddenFilesFoldersDrives -EnableShowProtec
 
 Update-ExecutionPolicy Unrestricted
 
-cinst Microsoft-Hyper-V-All -source windowsFeatures
+cinst -y Microsoft-Hyper-V-All -source windowsFeatures
 
 # Packages
-cinst cmder -pre
-cinst Gow
+cinst -y cmder -pre
+cinst -y Gow
 
 ## Node, npm
-cinst nodejs.install
+cinst -y nodejs.install
 
 ## Git
-cinst git.install
-cinst poshgit
-cinst git-credential-winstore
-cinst github
+cinst -y git.install
+cinst -y poshgit
+cinst -y git-credential-winstore
+cinst -y github
 
 ## Node, npm
-cinst nodejs.install
+cinst -y nodejs.install
 npm install -g npm-windows-upgrade
 
 ## Editors
-cinst SublimeText3
-cinst SublimeText3.PackageControl
-cinst sublimetext3-contextmenu
-cinst SublimeText3.PowershellAlias
+cinst -y SublimeText3
+cinst -y SublimeText3.PackageControl
+cinst -y sublimetext3-contextmenu
+cinst -y SublimeText3.PowershellAlias
 
-cinst Atom
-cinst visualstudiocode
+cinst -y Atom
+cinst -y visualstudiocode
 
 ## Visual Studio 2015
-cinst visualstudio2015community
+cinst -y visualstudio2015community
 if (Test-PendingReboot) { Invoke-Reboot }
 
 ## Ruby, Go, Python
-cinst ruby
-cinst ruby.devkit
+cinst -y ruby
+cinst -y ruby.devkit
 
-cinst golang
+cinst -y golang
 
-cinst python
-cinst pip
-cinst easy.install
+cinst -y python
+cinst -y pip
+cinst -y easy.install
 
 ## DevOps Stuff
-cinst virtualbox
-cinst virtualbox.extensionpack
-cinst vagrant
+cinst -y virtualbox
+cinst -y virtualbox.extensionpack
+cinst -y vagrant
 
 # Docker is currently not included, since it doesn't support Windows 10 at this time.
 # To install, manually download and run https://github.com/docker/toolbox/releases/download/v1.8.1a/DockerToolbox-1.8.1a-windows-10-test.exe
@@ -56,14 +56,14 @@ cinst vagrant
 if (Test-PendingReboot) { Invoke-Reboot }
 
 ## Basics
-cinst vlc
-cinst GoogleChrome
-cinst 7zip.install
-cinst sysinternals
-cinst DotNet3.5
-# cinst DotNet4.0 -- not needed on windows 8
-# cinst DotNet4.5 -- not needed on windows 10
-# cinst PowerShell -- not needed on windows 10
+cinst -y vlc
+cinst -y GoogleChrome
+cinst -y 7zip.install
+cinst -y sysinternals
+cinst -y DotNet3.5
+# cinst -y DotNet4.0 -- not needed on windows 8
+# cinst -y DotNet4.5 -- not needed on windows 10
+# cinst -y PowerShell -- not needed on windows 10
 if (Test-PendingReboot) { Invoke-Reboot }
 
 # Pinning Things
