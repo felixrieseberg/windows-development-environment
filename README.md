@@ -157,7 +157,9 @@ cinst virtualbox.extensionpack
 cinst vagrant
 ```
 
-Because Docker relies on Linux-specific features, you can’t run Docker natively in Windows. Instead, you must install the Docker Toolbox application. The application uses a VirtualBox Virtual Machine (VM) and Docker itself. These three things allow you to run Docker on Windows. The trouble is: Windows 10 is currently only supported via test version, which isn't available on Chocolatey. [Download and install it manually instead](https://github.com/docker/toolbox/releases/download/v1.8.1a/DockerToolbox-1.8.1a-windows-10-test.exe).
+If you want to run Docker machines and images, you might not need VirtualBox. In fact, installing VirtualBox on your system isn't always the best idea, given that it messes with a few system components.
+
+Docker just released a beta version for OS X and Windows that no longer requires VirtualBox to be installed - and instead uses the default Hypervisor that comes with the operating system (on Windows, that's Hyper-V). You can [read more about the beta over on Docker's blog](https://blog.docker.com/2016/03/docker-for-mac-windows-beta/).
 
 #### SSH
 If you installed CMDer or Gow as indicated above, you're already set - simply run `ssh` from CMD, CMDer, or PowerShell.
