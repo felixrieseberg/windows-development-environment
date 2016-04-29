@@ -1,6 +1,14 @@
 ## Setup Windows 10 for Modern/Hipster Development
 A fresh Windows isn't entirely ready for modern development, but all the tools you need are available. A good terminal, popular bash tools, Git, a decent package manager - when properly setup, modern development on Windows can be a lot of fun. In particular, this document outlines how to configure your Windows in such a way that it can easily handle most development tasks usually run on a Mac OS X or a Linux distro.
 
+## A Word about Ubuntu Linux on Windows
+:point_up: While [Bash on Windows](https://blogs.windows.com/windowsexperience/2016/04/06/announcing-windows-10-insider-preview-build-14316/) is still in development, it's an amazing tool that can make development a bit easier - especially when you're dealing with Bash scripts, Ruby, or Ubuntu binaries. I would currently (May 2016) not recommend it as a replacement for Git, Node, or Go - mostly because those tools are already pretty performant on Windows itself. However, they run just fine in Bash, so if you feel like moving most of your development over, go for it. Here's the how-to:
+
+ * Ensure that you're running Windows 10 Anniversary Update (build 14311 and up)
+ * Enable Developer Mode (Settings - Update & security > For developers)
+ * Search for “Windows Features” and choose “Turn Windows features on or off” and enable Windows Subsystem for Linux (Beta).
+ * To get Bash installed, open Command Prompt and type “bash”
+
 ## Automate it!
 Below, you can see the all the things I need to actually go and work on stuff. If you like all those things, you can automate the installation thanks to the magic of [Boxstarter](http://boxstarter.org/). Simply start PowerShell as Administrator and run:
 
@@ -44,7 +52,7 @@ Register-PackageSource -Name chocolatey -Location http://chocolatey.org/api/v2 -
 Once done, you can look for all Chrome packages by typing `Find-Package -Name Chrome` or install it by typing `Install-Package -Name GoogleChrome`.
 
 #### Terminal: CMDer (with PowerShell Support)
-The PowerShell in Windows 10 got a bunch of upgrades, but it's even better if used with CMDer, a powerful Console Emulator. As August 20 2015, my favorite is [CMDer 1.2](https://github.com/bliker/cmder/releases/tag/v1.2). Install with:
+The PowerShell in Windows 10 got a bunch of upgrades, but it's even better if used with [CMDer](https://github.com/bliker/cmder/), a powerful Console Emulator. Install with:
 
 ```
 cinst cmder -pre
@@ -85,7 +93,7 @@ npm-windows-upgrade
 ```
 
 #### Version Control: Git, Subversion, Mercurial
-Obviously. If you want Git to be able to save credentials (so you don't have to enter SSH keys / passwords every single time you do anything), also install git-credential-winstore.
+Obviously. If you want Git to be able to save credentials (so you don't have to enter SSH keys / passwords every single time you do anything), also install the Git Credential Manager for Windows.
 
 ```
 cinst git.install
@@ -94,7 +102,7 @@ cinst poshgit
 # Restart PowerShell / CMDer before moving on - or run
 $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User") 
 
-cinst git-credential-winstore
+cinst Git-Credential-Manager-for-Windows
 cinst github
 ```
 
@@ -150,19 +158,24 @@ cinst easy.install
 ### DevOps
 This stuff is really only relevant if you're interested in DevOps - but if you are, you should probably install the stuff below. It's not likely that you need any of the things below unless you're directly working with it, because none of those things are expected to be installed on a Unix machine.
 
-#### VirtualBox, Vagrant, Docker
+#### Docker, VirtualBox, Vagrant
+If you want to run Docker machines and images, you might not need VirtualBox. In fact, installing VirtualBox on your system isn't always the best idea, given that it messes with a few system components.
+
+Docker just released a beta version for OS X and Windows that no longer requires VirtualBox to be installed - and instead uses the default Hypervisor that comes with the operating system (on Windows, that's Hyper-V). You can [read more about the beta over on Docker's blog](https://blog.docker.com/2016/03/docker-for-mac-windows-beta/).
+
+However, if you want the old VirtualBox route, go and install that stuff with:
 ```
 cinst virtualbox
 cinst virtualbox.extensionpack
 cinst vagrant
 ```
 
-If you want to run Docker machines and images, you might not need VirtualBox. In fact, installing VirtualBox on your system isn't always the best idea, given that it messes with a few system components.
-
-Docker just released a beta version for OS X and Windows that no longer requires VirtualBox to be installed - and instead uses the default Hypervisor that comes with the operating system (on Windows, that's Hyper-V). You can [read more about the beta over on Docker's blog](https://blog.docker.com/2016/03/docker-for-mac-windows-beta/).
-
 #### SSH
-If you installed CMDer or Gow as indicated above, you're already set - simply run `ssh` from CMD, CMDer, or PowerShell.
+If you installed CMDer or Gow as indicated above, you're already set - simply run `ssh` from CMD, CMDer, or PowerShell. If you didn't, use the official Microsoft port of OpenSSH:
+
+```
+cinst win32-openssh
+```
 
 #### Azure Cli
 Super duper useful if you're working with Azure at all.
