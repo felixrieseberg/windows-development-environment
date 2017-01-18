@@ -2,7 +2,7 @@
 A fresh Windows isn't entirely ready for modern development, but all the tools you need are available. A good terminal, popular bash tools, Git, a decent package manager - when properly setup, modern development on Windows can be a lot of fun. In particular, this document outlines how to configure your Windows in such a way that it can easily handle most development tasks usually run on a Mac OS X or a Linux distro.
 
 ## A Word about Ubuntu Linux on Windows
-:point_up: While [Bash on Windows](https://blogs.windows.com/windowsexperience/2016/04/06/announcing-windows-10-insider-preview-build-14316/) is still in development, it's an amazing tool that can make development a bit easier - especially when you're dealing with Bash scripts, Ruby, or Ubuntu binaries. I would currently (May 2016) not recommend it as a replacement for Git, Node, or Go - mostly because those tools are already pretty performant on Windows itself. However, they run just fine in Bash, so if you feel like moving most of your development over, go for it. Here's the how-to:
+:point_up: While [Bash on Windows](https://msdn.microsoft.com/en-us/commandline/wsl/about) isn't perfect yet, it's an amazing tool that can make development a lot easier - especially when you're dealing with Bash scripts, Ruby, or Ubuntu binaries. I would currently (January 2017) not recommend it as a replacement for Git, Node, or Go - mostly because those tools are already pretty performant on Windows itself. However, they run just fine in Bash, so if you feel like moving most of your development over, go for it. Here's the how-to:
 
  * Ensure that you're running Windows 10 Anniversary Update (build 14311 and up)
  * Enable Developer Mode (Settings - Update & security > For developers)
@@ -52,10 +52,11 @@ Register-PackageSource -Name chocolatey -Location http://chocolatey.org/api/v2 -
 Once done, you can look for all Chrome packages by typing `Find-Package -Name Chrome` or install it by typing `Install-Package -Name GoogleChrome`.
 
 #### Terminal: CMDer (with PowerShell Support)
-The PowerShell in Windows 10 got a bunch of upgrades, but it's even better if used with [CMDer](https://github.com/bliker/cmder/), a powerful Console Emulator. Install with:
+The PowerShell in Windows 10 got a bunch of upgrades, but it's even better if used with [CMDer](https://github.com/bliker/cmder/) or [Hyper](https://hyper.is/), both poweful toosl to do more command-line things with. CMDer is the old-school veteran, while Hyper hasn't been around for long. Try both and see what you like more! Install with:
 
 ```
 cinst cmder -pre
+cinst hyper
 ```
 
 Even if you don't want to use CMDer, you should enable your PowerShell to execute scripts. You're a developer - the terminal is your friend.
@@ -64,8 +65,10 @@ Even if you don't want to use CMDer, you should enable your PowerShell to execut
 Set-ExecutionPolicy Unrestricted -Scope CurrentUser
 ```
 
+If you want to go even futher, check out the attached PowerShell Profile in this repository. It's my personal one and might not be perfect for you, but it makes my personal life a lot easier. You can edit your PowerShell profile with your favorite editor by calling `$PROFILE`, so if you're using Visual Studio Code, call `code $PROFILE` (or `vim $PROFILE` - you get the idea).
+
 #### Bash Tools (wget, curl, etc): Gow
-If you're coming from a Unix machine, you might miss commands like curl, diff, grep and many other. Gow is your friend - it's a collection of a 100+ famous Unix tools recompiled for Windows. 
+If you're coming from a Unix machine, you might miss commands like curl, diff, grep and many other. Gow is your friend - it's a collection of a 100+ famous Unix tools recompiled for Windows.
 
 ```
 cinst Gow
@@ -76,12 +79,6 @@ A bunch of tools are powered by Node and installed via npm. This applies to you 
 
 ```
 cinst nodejs.install
-```
-
-While we're at it, we should also install PhantomJS, a popular headless WebKit with JavaScript API, used by a bunch of testing tools for browser tech.
-
-```
-cinst phantomjs
 ```
 
 #### NPM
@@ -100,7 +97,7 @@ cinst git.install
 cinst poshgit
 
 # Restart PowerShell / CMDer before moving on - or run
-$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User") 
+$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
 
 cinst Git-Credential-Manager-for-Windows
 cinst github
@@ -161,7 +158,11 @@ This stuff is really only relevant if you're interested in DevOps - but if you a
 #### Docker, VirtualBox, Vagrant
 If you want to run Docker machines and images, you might not need VirtualBox. In fact, installing VirtualBox on your system isn't always the best idea, given that it messes with a few system components.
 
-Docker just released a beta version for OS X and Windows that no longer requires VirtualBox to be installed - and instead uses the default Hypervisor that comes with the operating system (on Windows, that's Hyper-V). You can [read more about the beta over on Docker's blog](https://blog.docker.com/2016/03/docker-for-mac-windows-beta/).
+Docker released a version for OS X and Windows that no longer requires VirtualBox to be installed - and instead uses the default Hypervisor that comes with the operating system (on Windows, that's Hyper-V). You can [read more about the beta over on Docker's blog](https://docs.docker.com/docker-for-windows/).
+
+```
+cinst docker-for-windows
+```
 
 However, if you want the old VirtualBox route, go and install that stuff with:
 ```

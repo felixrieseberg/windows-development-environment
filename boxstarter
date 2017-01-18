@@ -7,6 +7,7 @@ cinst -y Microsoft-Hyper-V-All -source windowsFeatures
 
 # Packages
 cinst -y cmder -pre
+cinst -y hyper
 cinst -y Gow
 
 ## Node, npm
