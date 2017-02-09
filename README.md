@@ -175,7 +175,7 @@ cinst vagrant
 If you installed CMDer or Gow as indicated above, you're already set - simply run `ssh` from CMD, CMDer, or PowerShell. If you didn't, use the official Microsoft port of OpenSSH:
 
 ```
-cinst win32-openssh
+cinst openssh
 ```
 
 #### Azure Cli
