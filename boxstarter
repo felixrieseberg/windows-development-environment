@@ -10,9 +10,6 @@ cinst -y cmder -pre
 cinst -y hyper
 cinst -y Gow
 
-## Node, npm
-cinst -y nodejs.install
-
 ## Git
 cinst -y git.install
 cinst -y poshgit
