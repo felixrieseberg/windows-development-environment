@@ -74,6 +74,21 @@ If you're coming from a Unix machine, you might miss commands like curl, diff, g
 cinst Gow
 ```
 
+#### .dotfiles
+If you want to customize/tweak your dev-enviroment, then you possibly want to use some dotfiles (configuration files). The next dotfiles can be used with "Git Bash (Windows)" / "Cygwin (Windows)" / "Ubuntu Linux on Windows".
+
+```
+cd ~ ; git clone https://github.com/voku/dotfiles.git; cd dotfiles
+
+./firstInstallDebianBased.sh # for "Ubuntu Linux on Windows"
+./firstInstallCygwin.sh # for "Cygwin (Windows)"
+
+./bootstrap.sh
+```
+
+- [howto](https://suckup.de/2017/04/ubuntu-windows-dotfiles/)
+- [github](https://github.com/voku/dotfiles)
+
 #### Node
 A bunch of tools are powered by Node and installed via npm. This applies to you even if you don't care about Node development. If you want to install tools for React, Azure, TypeScript, or Cordova, you'll need this.
 
