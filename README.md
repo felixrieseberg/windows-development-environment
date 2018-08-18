@@ -19,10 +19,9 @@ START http://boxstarter.org/package/nr/url?https://raw.githubusercontent.com/fel
 ## The Goods
  * [Package Management](#package-management-chocolatey)
  * [Terminal](#terminal-cmder-with-powershell-support)
- * [Bash Tools](#bash-tools-wget-curl-etc-gow)
- * [Node.js](#node)
- * [npm](#npm)
- * [Git](#git)
+ * [PowerShell Profile](#powershell-profile)
+ * [Node.js](#node-and-npm)
+ * [Git](#version-control-git)
  * [Atom, Sublime, VS Code](#code-editors-atom-sublime-vs-code)
  * [Ruby](#ruby)
  * [Go](#go)
@@ -67,29 +66,200 @@ Set-ExecutionPolicy Unrestricted -Scope CurrentUser
 
 If you want to go even further, check out the attached PowerShell Profile in this repository. It's my personal one and might not be perfect for you, but it makes my personal life a lot easier. You can edit your PowerShell profile with your favorite editor by calling `$PROFILE`, so if you're using Visual Studio Code, call `code $PROFILE` (or `vim $PROFILE` - you get the idea).
 
-#### Bash Tools (wget, curl, etc): Gow
-If you're coming from a Unix machine, you might miss commands like curl, diff, grep and many other. Gow is your friend - it's a collection of a 100+ famous Unix tools recompiled for Windows.
+#### PowerShell Profile
+Now that you have a good terminal, you might wonder how you can beef it up. This isn't part of the automated setup, but I'm quite happy with my profile. I've changed my PowerShell in the following ways:
 
-```powershell
-cinst Gow
+ * Add helper functions (`uptime`, `reload-profile`, `find-file`, `unzip`, and `print-path`)
+ * Add equivalents for my favorite Unix commands (`df`, `sed`, `sed-recursive`, `grep`, `grepv`, `which`, `export`, `pkill`, `pgrep`, `touch`, `sudo`, `pstree`)
+ * Add Git aliases (`gc` for `git checkout`, `gp` for `git pull`)
+ * Set the default output to `utf8`
+ * Increase the linme history to 10000
+ 
+To edit your PowerShell profile, run `notepad.exe $PROFILE` (or use an editor of your choice). Then, add the following:
+
+<details>
+<summary>My PowerShell Profile</summary>
+   
+```ps
+# Increase history
+$MaximumHistoryCount = 10000
+
+# Produce UTF-8 by default
+$PSDefaultParameterValues["Out-File:Encoding"]="utf8"
+
+# Show selection menu for tab
+Set-PSReadlineKeyHandler -Chord Tab -Function MenuComplete
+
+# Helper Functions
+#######################################################
+
+function uptime {
+	Get-WmiObject win32_operatingsystem | select csname, @{LABEL='LastBootUpTime';
+	EXPRESSION={$_.ConverttoDateTime($_.lastbootuptime)}}
+}
+
+function reload-profile {
+	& $profile
+}
+
+function find-file($name) {
+	ls -recurse -filter "*${name}*" -ErrorAction SilentlyContinue | foreach {
+		$place_path = $_.directory
+		echo "${place_path}\${_}"
+	}
+}
+
+function print-path {
+	($Env:Path).Split(";")
+}
+
+function unzip ($file) {
+	$dirname = (Get-Item $file).Basename
+	echo("Extracting", $file, "to", $dirname)
+	New-Item -Force -ItemType directory -Path $dirname
+	expand-archive $file -OutputPath $dirname -ShowProgress
+}
+
+
+# Unixlike commands
+#######################################################
+
+function df {
+	get-volume
+}
+
+function sed($file, $find, $replace){
+	(Get-Content $file).replace("$find", $replace) | Set-Content $file
+}
+
+function sed-recursive($filePattern, $find, $replace) {
+	$files = ls . "$filePattern" -rec
+	foreach ($file in $files) {
+		(Get-Content $file.PSPath) |
+		Foreach-Object { $_ -replace "$find", "$replace" } |
+		Set-Content $file.PSPath
+	}
+}
+
+function grep($regex, $dir) {
+	if ( $dir ) {
+		ls $dir | select-string $regex
+		return
+	}
+	$input | select-string $regex
+}
+
+function grepv($regex) {
+	$input | ? { !$_.Contains($regex) }
+}
+
+function which($name) {
+	Get-Command $name | Select-Object -ExpandProperty Definition
+}
+
+function export($name, $value) {
+	set-item -force -path "env:$name" -value $value;
+}
+
+function pkill($name) {
+	ps $name -ErrorAction SilentlyContinue | kill
+}
+
+function pgrep($name) {
+	ps $name
+}
+
+function touch($file) {
+	"" | Out-File $file -Encoding ASCII
+}
+
+function sudo {
+	$file, [string]$arguments = $args;
+	$psi = new-object System.Diagnostics.ProcessStartInfo $file;
+	$psi.Arguments = $arguments;
+	$psi.Verb = "runas";
+	$psi.WorkingDirectory = get-location;
+	[System.Diagnostics.Process]::Start($psi) >> $null
+}
+
+# https://gist.github.com/aroben/5542538
+function pstree {
+	$ProcessesById = @{}
+	foreach ($Process in (Get-WMIObject -Class Win32_Process)) {
+		$ProcessesById[$Process.ProcessId] = $Process
+	}
+
+	$ProcessesWithoutParents = @()
+	$ProcessesByParent = @{}
+	foreach ($Pair in $ProcessesById.GetEnumerator()) {
+		$Process = $Pair.Value
+
+		if (($Process.ParentProcessId -eq 0) -or !$ProcessesById.ContainsKey($Process.ParentProcessId)) {
+			$ProcessesWithoutParents += $Process
+			continue
+		}
+
+		if (!$ProcessesByParent.ContainsKey($Process.ParentProcessId)) {
+			$ProcessesByParent[$Process.ParentProcessId] = @()
+		}
+		$Siblings = $ProcessesByParent[$Process.ParentProcessId]
+		$Siblings += $Process
+		$ProcessesByParent[$Process.ParentProcessId] = $Siblings
+	}
+
+	function Show-ProcessTree([UInt32]$ProcessId, $IndentLevel) {
+		$Process = $ProcessesById[$ProcessId]
+		$Indent = " " * $IndentLevel
+		if ($Process.CommandLine) {
+			$Description = $Process.CommandLine
+		} else {
+			$Description = $Process.Caption
+		}
+
+		Write-Output ("{0,6}{1} {2}" -f $Process.ProcessId, $Indent, $Description)
+		foreach ($Child in ($ProcessesByParent[$ProcessId] | Sort-Object CreationDate)) {
+			Show-ProcessTree $Child.ProcessId ($IndentLevel + 4)
+		}
+	}
+
+	Write-Output ("{0,6} {1}" -f "PID", "Command Line")
+	Write-Output ("{0,6} {1}" -f "---", "------------")
+
+	foreach ($Process in ($ProcessesWithoutParents | Sort-Object CreationDate)) {
+		Show-ProcessTree $Process.ProcessId 0
+	}
+}
+
+# Aliases
+#######################################################
+
+function pull () { & get pull $args }
+function checkout () { & git checkout $args }
+
+del alias:gc -Force
+del alias:gp -Force
+
+Set-Alias -Name gc -Value checkout
+Set-Alias -Name gp -Value pull
 ```
 
-#### Node
+</details>
+
+#### Node and npm
 A bunch of tools are powered by Node and installed via npm. This applies to you even if you don't care about Node development. If you want to install tools for React, Azure, TypeScript, or Cordova, you'll need this.
 
 ```powershell
 cinst nodejs.install
 ```
 
-#### NPM
-You just installed Node, which means that you also installed a slightly outdated version of npm. npm@3 is currently in development and offers a bunch of benefits for Windows users. You probably want to upgrade to npm, at least version 5.6.
+In the future, you might want to update `npm`. On Windows, just running `npm i -g npm` doesn't always do what it should, so use `npm-windows-upgrade` instead:
 
 ```
 npm install -g npm-windows-upgrade
 npm-windows-upgrade
 ```
 
-#### Version Control: Git, Subversion, Mercurial
+#### Version Control: Git
 Obviously. If you want Git to be able to save credentials (so you don't have to enter SSH keys / passwords every single time you do anything), also install the Git Credential Manager for Windows.
 
 ```
@@ -103,11 +273,16 @@ cinst Git-Credential-Manager-for-Windows
 cinst github
 ```
 
-If you're using Mercurial or Subversion, install with:
+<details>
+<summary>📝 Bonus: Mercurial, Subversion</summary>
+   
+If you're using Mercurial or Subversion (you poor, poor thing), install with:
 ```
 cinst subversion
 cinst mercurial
 ```
+
+</details>
 
 #### Code Editors: Atom, Sublime, VS Code
 I won't join the war debating which editor is the best, but if you're looking for an editor and not a full IDE, chances are that you'll end up using one of those three.
