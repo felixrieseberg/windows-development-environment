@@ -7,7 +7,6 @@ cinst -y Microsoft-Hyper-V-All -source windowsFeatures
 
 # Packages
 cinst -y hyper
-cinst -y Gow
 
 ## Git
 cinst -y git.install
