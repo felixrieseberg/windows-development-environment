@@ -1,7 +1,3 @@
-
-# Load posh-git example profile
-. 'C:\Users\felixr\Documents\WindowsPowerShell\Modules\posh-git\profile.example.ps1'
-
 # Increase history
 $MaximumHistoryCount = 10000
 
@@ -19,7 +15,7 @@ function uptime {
 	EXPRESSION={$_.ConverttoDateTime($_.lastbootuptime)}}
 }
 
-function reload-powershell-profile {
+function reload-profile {
 	& $profile
 }
 
@@ -30,9 +26,17 @@ function find-file($name) {
 	}
 }
 
-function get-path {
+function print-path {
 	($Env:Path).Split(";")
 }
+
+function unzip ($file) {
+	$dirname = (Get-Item $file).Basename
+	echo("Extracting", $file, "to", $dirname)
+	New-Item -Force -ItemType directory -Path $dirname
+	expand-archive $file -OutputPath $dirname -ShowProgress
+}
+
 
 # Unixlike commands
 #######################################################
@@ -86,7 +90,6 @@ function touch($file) {
 	"" | Out-File $file -Encoding ASCII
 }
 
-# From https://github.com/keithbloom/powershell-profile/blob/master/Microsoft.PowerShell_profile.ps1
 function sudo {
 	$file, [string]$arguments = $args;
 	$psi = new-object System.Diagnostics.ProcessStartInfo $file;
@@ -144,9 +147,14 @@ function pstree {
 	}
 }
 
-function unzip ($file) {
-    $dirname = (Get-Item $file).Basename
-    echo("Extracting", $file, "to", $dirname)
-    New-Item -Force -ItemType directory -Path $dirname
-    expand-archive $file -OutputPath $dirname -ShowProgress
-}
+# Aliases
+#######################################################
+
+function pull () { & get pull $args }
+function checkout () { & git checkout $args }
+
+del alias:gc -Force
+del alias:gp -Force
+
+Set-Alias -Name gc -Value checkout
+Set-Alias -Name gp -Value pull
