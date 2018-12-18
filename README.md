@@ -51,7 +51,7 @@ Get-PackageProvider -name chocolatey
 Once done, you can look for all Chrome packages by typing `Find-Package -Name Chrome` or install it by typing `Install-Package -Name GoogleChrome`.
 
 #### Terminal: CMDer (with PowerShell Support)
-The PowerShell in Windows 10 got a bunch of upgrades, but it's even better if used with [CMDer](https://github.com/bliker/cmder/) or [Hyper](https://hyper.is/), both powerful tools to do more command-line things with. CMDer is the old-school veteran, while Hyper hasn't been around for long. Try both and see what you like more! I _personally_ prefer Hyper, simply because it can be styled and extended with addons. Install with:
+The PowerShell in Windows 10 got a bunch of upgrades, but it's even better if used with [CMDer](https://github.com/bliker/cmder/), [Hyper](https://hyper.is/) or [Fluent Terminal](https://github.com/felixse/FluentTerminal). They are powerful tools to do more command-line things with. CMDer is the old-school veteran, while Hyper hasn't been around for long. Try all and see what you like more! I _personally_ prefer Hyper, simply because it can be styled and extended with addons. Install with:
 
 ```powershell
 cinst cmder -pre
