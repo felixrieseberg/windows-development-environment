@@ -270,7 +270,7 @@ cinst poshgit
 $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
 
 cinst Git-Credential-Manager-for-Windows
-cinst github
+cinst github-desktop
 ```
 
 <details>
