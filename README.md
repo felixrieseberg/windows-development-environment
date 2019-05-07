@@ -233,7 +233,7 @@ function pstree {
 # Aliases
 #######################################################
 
-function pull () { & get pull $args }
+function pull () { & git pull $args }
 function checkout () { & git checkout $args }
 
 del alias:gc -Force
