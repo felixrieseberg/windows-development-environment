@@ -1,13 +1,12 @@
 ## Setup Windows 10 for Modern/Hipster Development
 A fresh Windows isn't entirely ready for modern development, but all the tools you need are available. A good terminal, popular bash tools, Git, a decent package manager - when properly setup, modern development on Windows can be a lot of fun. In particular, this document outlines how to configure your Windows in such a way that it can easily handle most development tasks usually run on a Mac OS X or a Linux distro.
 
-## A Word about Ubuntu Linux on Windows
-:point_up: While [Bash on Windows](https://msdn.microsoft.com/en-us/commandline/wsl/about) isn't perfect yet, it's an amazing tool that can make development a lot easier - especially when you're dealing with Bash scripts, Ruby, or Ubuntu binaries. It's an amazing tool, but keep in mind that Git, Node, or Go are already pretty performant on Windows itself. However, they run just fine in Bash, so if you feel like moving most of your development over, go for it. Here's the how-to:
+## A Word about WSL
+:point_up: While the [Windows Subsystem for Linux](https://msdn.microsoft.com/en-us/commandline/wsl/about) isn't perfect yet, it's an amazing tool that can make development a lot easier - especially when you're dealing with Bash scripts, Ruby, or Linux binaries. It's an amazing tool, but keep in mind that Git, Node, or Go are already pretty performant on Windows itself. However, they run just fine in Bash, so if you feel like moving most of your development over, go for it. Here's the how-to:
 
- * Ensure that you're running Windows 10 Anniversary Update (build 14311 and up)
- * Enable Developer Mode (Settings - Update & security > For developers)
- * Search for “Windows Features” and choose “Turn Windows features on or off” and enable Windows Subsystem for Linux.
- * To get Bash installed, open Command Prompt and type “bash”
+ * Ensure that you're running Windows 10 Anniversary Update (Build 14311) or newer
+ * Enable the feature from PowerShell: `Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux`
+ * Pick a distribution from the [Microsoft Store](https://tinyurl.com/y3sc3lw2) or install one [manually](https://docs.microsoft.com/windows/wsl/install-manual#installing-your-distro)
 
 ## Automate it!
 Below, you can see the all the things I need to actually go and work on stuff. An opiniated version of the list below can be installed automatically thanks to the magic of [Boxstarter](http://boxstarter.org/). [Check out the script to see what it runs](https://github.com/felixrieseberg/windows-development-environment/blob/master/boxstarter). It's a trimmed down version of all the tools below, leaving out duplicate tools. As an example, it installs VS Code (and not Atom or Sublime) and Git (but not Subversion or Mercurial). Simply start PowerShell as Administrator and run:
