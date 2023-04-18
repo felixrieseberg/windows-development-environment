@@ -3,37 +3,54 @@ Set-WindowsExplorerOptions -EnableShowHiddenFilesFoldersDrives -EnableShowProtec
 
 Update-ExecutionPolicy Unrestricted
 
-cinst -y Microsoft-Hyper-V-All -source windowsFeatures
+# Create empty profile (so profile-integration scripts have something to append to)
+if (-not (Test-Path $PROFILE)) {
+  $directory = [IO.Path]::GetDirectoryName($PROFILE)
+  if (-not (Test-Path $directory)) {
+      New-Item -ItemType Directory $directory | Out-Null
+  }
+  "# Profile" > $PROFILE
+}
 
-# Packages
-cinst -y hyper
+## Windows Features
+cinst -y Microsoft-Hyper-V-All -source windowsFeatures
+cinst -y Containers -source windowsfeatures
+
+## No SMB1 - https://blogs.technet.microsoft.com/filecab/2016/09/16/stop-using-smb1/
+Disable-WindowsOptionalFeature -Online -FeatureName smb1protocol
+
+## Terminal
+cinst -y microsoft-windows-terminal
+cinst -y oh-my-posh
+
+## Editors
+cinst firacode -y
+cinst vscode -y
+choco pin add -n=vscode
+choco pin add -n="vscode.install"
 
 ## Git
-cinst -y git.install
-cinst -y poshgit
+cinst git.install /NoShellIntegration /WindowsTerminalProfile /Symlinks /DefaultBranchName:main /Editor:VisualStudioCodeInsiders
 
 # Restart PowerShell / CMDer before moving on - or run
 $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
 
-cinst Git-Credential-Manager-for-Windows
-cinst github
-
 ## Node, npm
-cinst -y nodejs.install
-npm install -g npm-windows-upgrade
+cinst -y nvm
 
-## Editors
-cinst -y visualstudiocode
+if (-not(Get-Command node -ErrorAction Ignore)) {
+  C:\ProgramData\nvm\nvm.exe install lts
+  C:\ProgramData\nvm\nvm.exe use lts
+}
 
-## Visual Studio 2017
-cinst -y visualstudio2017community
+## Windows Build Tools
+cinst -y visualstudio2022buildtools
+
 if (Test-PendingReboot) { Invoke-Reboot }
 
-## Ruby, Go, Python
-cinst -y ruby
-cinst -y ruby.devkit
-
-cinst -y python2
+## Python
+cinst -y python
+cinst -y pip
 
 if (Test-PendingReboot) { Invoke-Reboot }
 
@@ -42,15 +59,43 @@ cinst -y vlc
 cinst -y GoogleChrome
 cinst -y 7zip.install
 cinst -y sysinternals
-cinst -y DotNet3.5
+cinst -y paint.net
+cinst -y spotify
 
+# Remove unwanted Store apps
+Get-AppxPackage Facebook.Facebook | Remove-AppxPackage -ErrorAction SilentlyContinue
+Get-AppxPackage TuneIn.TuneInRadio | Remove-AppxPackage -ErrorAction SilentlyContinue
+Get-AppxPackage Microsoft.MinecraftUWP | Remove-AppxPackage -ErrorAction SilentlyContinue
+Get-AppxPackage Microsoft.MicrosoftSolitaireCollection | Remove-AppxPackage -ErrorAction SilentlyContinue
+Get-AppxPackage KeeperSecurityInc.Keeper | Remove-AppxPackage -ErrorAction SilentlyContinue
+Get-AppxPackage 2FE3CB00.PicsArt-PhotoStudio | Remove-AppxPackage -ErrorAction SilentlyContinue
+Get-AppxPackage 9E2F88E3.Twitter | Remove-AppxPackage -ErrorAction SilentlyContinue
+Get-AppxPackage -AllUser -Name *Twitter | Remove-AppxPackage -ErrorAction SilentlyContinue
+Get-AppxPackage -AllUser -Name *MarchofEmpires | Remove-AppxPackage -ErrorAction SilentlyContinue
+Get-AppxPackage -AllUser -Name king.com.* | Remove-AppxPackage -ErrorAction SilentlyContinue
+Get-AppxPackage -AllUser -Name Microsoft.3DBuilder | Remove-AppxPackage -ErrorAction SilentlyContinue
+Get-AppxPackage -AllUser -Name *Bing* | Remove-AppxPackage -ErrorAction SilentlyContinue
+Get-AppxPackage -AllUser -Name Microsoft.Office.Word | Remove-AppxPackage -ErrorAction SilentlyContinue
+Get-AppxPackage -AllUser -Name Microsoft.Office.PowerPoint | Remove-AppxPackage -ErrorAction SilentlyContinue
+Get-AppxPackage -AllUser -Name Microsoft.Office.Excel | Remove-AppxPackage -ErrorAction SilentlyContinue
+Get-AppxPackage -AllUser -Name Microsoft.MicrosoftOfficeHub | Remove-AppxPackage -ErrorAction SilentlyContinue
+Get-AppxPackage -AllUser -Name DellInc.PartnerPromo | Remove-AppxPackage -ErrorAction SilentlyContinue
+Get-AppxPackage -AllUser -Name Microsoft.Office.OneNote | Remove-AppxPackage -ErrorAction SilentlyContinue
+Get-AppxPackage -AllUser -Name Microsoft.MicrosoftSolitaireCollection | Remove-AppxPackage -ErrorAction SilentlyContinue
+Get-AppxPackage -AllUser -Name Microsoft.SkypeApp | Remove-AppxPackage -ErrorAction SilentlyContinue
+Get-AppxPackage -AllUser -Name Microsoft.YourPhone | Remove-AppxPackage -ErrorAction SilentlyContinue
+Get-AppxPackage -AllUser -Name *XBox* | Remove-AppxPackage -ErrorAction SilentlyContinue
+Get-AppxPackage -AllUser -Name Microsoft.MixedReality.Portal | Remove-AppxPackage -ErrorAction SilentlyContinue
+Get-AppxPackage -AllUser -Name Microsoft.Microsoft3DViewer | Remove-AppxPackage -ErrorAction SilentlyContinue
+Get-AppxPackage -AllUser -Name SpotifyAB.SpotifyMusic | Remove-AppxPackage -ErrorAction SilentlyContinue
+Get-AppxPackage -AllUser -Name Microsoft.MSPaint | Remove-AppxPackage -ErrorAction SilentlyContinue # Paint3D
+
+# cinst -y DotNet3.5 -- not needed on windows 8
 # cinst -y DotNet4.0 -- not needed on windows 8
 # cinst -y DotNet4.5 -- not needed on windows 10
 # cinst -y PowerShell -- not needed on windows 10
-if (Test-PendingReboot) { Invoke-Reboot }
 
-# Pinning Things
-Install-ChocolateyPinnedTaskBarItem "$env:programfiles\Google\Chrome\Application\chrome.exe"
+if (Test-PendingReboot) { Invoke-Reboot }
 
 # Let's get Updates, too
 Install-WindowsUpdate -acceptEula
