@@ -30,7 +30,7 @@ choco pin add -n=vscode
 choco pin add -n="vscode.install"
 
 ## Git
-cinst git.install /NoShellIntegration /WindowsTerminalProfile /Symlinks /DefaultBranchName:main /Editor:VisualStudioCodeInsiders
+cinst git.install -y --params "'/NoShellIntegration /WindowsTerminalProfile /Symlinks /DefaultBranchName:main /Editor:VisualStudioCodeInsiders'"
 
 # Restart PowerShell / CMDer before moving on - or run
 $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
